@@ -35,12 +35,49 @@ const checkUserExistSQL = "SELECT * FROM users WHERE name = ?;"
 
 //user token sql
 const loginSQL = "INSERT INTO userSession (token, name, device) VALUES (?, ?, ?);"
+const checkSessionSQL = "SELECT * FROM userSession WHERE name =? AND token = ?;"
+const checkSessionSQLF = "SELECT * FROM userSession WHERE name =? AND token = ? AND device = ?;"//future implication
 
 //Token
 function genAccessToken(userInfo, device) {
   const toeknPayLoad = { username: userInfo.name, device: device }
   const accessToken = jwt.sign(toeknPayLoad, AccessKey, {})
   return accessToken
+}
+
+//decode jwtToken
+/*
+function verifyJWT(token) {
+  let isToken
+  if (token === undefined || token === null) {
+    return "Token not here"
+  } else {
+    jwt.verify(token, AccessKey, (e, decode) => {
+      if (e) {
+        isToken = false
+      } else {
+        isToken = decode
+      }
+    })
+  }
+  return isToken
+}
+*/
+
+//check function
+async function checkToken(name, token) {
+  return new Promise((resolve, reject) => {
+    db.query(checkSessionSQL, [name, token], (err, result) => {
+      if (err) {
+        return resolve(false)
+      } else {
+        if (result.length > 0) {
+          return resolve(true)
+        }
+        return resolve(false)
+      }
+    })
+  })
 }
 
 async function checkUserExist(name) {
@@ -146,6 +183,33 @@ exports.login = async (req, res) => {
     }
   } else {
     rMessage = "Name/password is empty"
+    rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  }
+}
+
+exports.profile = async (req, res) => {
+  if (isEmpty(req.body)) {
+    rMessage = "Invalid para"
+    rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  }
+  const name = req.body.name
+  const token = req.body.token
+  const device = req.body.device ? req.body.device : "mac" //future implication
+  const tokenResult = await checkToken(name, token)
+  if (tokenResult) {
+    const userData = await checkUserExist(name)
+    if (typeof userData === "object") { //user exist
+      rCheck = true
+    }else{
+      rCheck = false
+    }
+    const date = new Date(userData[0]["DOB"]);
+    userData[0]["DOB"] = date.toLocaleDateString() === "1/1/1970" ? null : date.toLocaleDateString() //to send localDate
+    return res.send({ result: userData, check: rCheck })
+  } else {
+    rMessage = "jwt fail"
     rCheck = false
     return res.send({ result: rMessage, check: rCheck })
   }
