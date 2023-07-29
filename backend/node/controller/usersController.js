@@ -32,6 +32,9 @@ var rCheck = false
 //user table sql
 const createtUserSQL = "INSERT INTO users (name, password, email, DOB, gender, dateOfCreation) VALUES (?, ?, ?, ?, ?, ?);"
 const checkUserExistSQL = "SELECT * FROM users WHERE name = ?;"
+const updateAllSQL = "UPDATE users SET password = ?, email = ?, dob = ?, gender = ? WHERE (name = ?);"
+const updateEmailSQL = "UPDATE users SET email = ?, dob = ?, gender = ? WHERE (name = ?);"
+
 
 //user token sql
 const loginSQL = "INSERT INTO userSession (token, name, device) VALUES (?, ?, ?);"
@@ -90,6 +93,31 @@ async function checkUserExist(name) {
           return resolve(result)
         }
         return resolve("Wrong username/password combination") //user does not exist
+      }
+    })
+  })
+}
+
+//Update function
+async function updateAll(password, email, dob, gender, name) {
+  return new Promise((resolve, reject) => {
+    db.query(updateAllSQL, [password, email, dob, gender, name], (err, result) => {
+      if (err) {
+        return resolve(["fail", false])
+      } else {
+        return resolve(["Profile updated", true])
+      }
+    })
+  })
+}
+
+async function updateEmail(email, dob, gender, name) {
+  return new Promise((resolve, reject) => {
+    db.query(updateEmailSQL, [email, dob, gender, name], (err, result) => {
+      if (err) {
+        return resolve(["fail", false])
+      } else {
+        return resolve(["Profile updated", true])
       }
     })
   })
@@ -205,12 +233,81 @@ exports.profile = async (req, res) => {
     }else{
       rCheck = false
     }
-    const date = new Date(userData[0]["DOB"]);
-    userData[0]["DOB"] = date.toLocaleDateString() === "1/1/1970" ? null : date.toLocaleDateString() //to send localDate
     return res.send({ result: userData, check: rCheck })
   } else {
     rMessage = "jwt fail"
     rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  }
+}
+
+exports.updateProfile = async (req, res) => {
+  if (isEmpty(req.body)) {
+    rMessage = "Invalid para"
+    rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  } else {
+    rCheck = false
+    if (!req.body.name) {
+      rMessage = "Name is required"
+      return res.send({ result: rMessage, check: rCheck })
+    }
+    if (!req.body.password) { //old password
+      rMessage = "Password is required"
+      return res.send({ result: rMessage, check: rCheck })
+    }
+    if (!req.body.email) {
+      rMessage = "Email is required"
+      return res.send({ result: rMessage, check: rCheck })
+    }
+  }
+  const name = req.body.name
+  const password = req.body.password
+  const newPassword = req.body.newPassword
+  const email = req.body.email
+  const dob = req.body.dob ? req.body.dob : null
+  const gender = req.body.gender ? req.body.gender : null
+  const token = req.body.token
+  //const confirmNewPassword = req.body.cnewPassword //future implication 
+  //const device = req.body.device ? req.body.device : "mac" //future implication
+
+  const tokenResult = await checkToken(name, token)
+  if (tokenResult) {
+    const userData = await checkUserExist(name)
+    if (typeof userData === "string") { //user does not exist or db fail
+      return res.send({ result: userData, check: rCheck })
+    } else {
+      if (userData.length > 0) {
+        const match = await bcrypt.compare(password, userData[0].password)
+        if (match && email.match(emailreg)) {
+          if (newPassword && newPassword.match(pwreg)) {
+            const salt = bcrypt.genSaltSync(10)
+            const hashPW = await bcrypt.hash(newPassword, salt)
+            const update = await updateAll(hashPW, email, dob, gender, name)
+            return res.send({ result: update[0], check: update[1] })
+          } else if (newPassword) { //no new password 
+            if (!newPassword.match(pwreg)) {
+              rMessage = "Invalid new password format"
+              rCheck = false
+              return res.send({ result: rMessage, check: rCheck })
+            }
+          } else {
+            const update = await updateEmail(email, dob, gender, name)
+            return res.send({ result: update[0], check: update[1] })
+          }
+        } else {
+          rCheck = false
+          if (!match) {
+            rMessage = "Wrong current password"
+          } else if (!email.match(emailreg)) {
+            rMessage = "Invalid Email format"
+          }
+          return res.send({ result: rMessage, check: rCheck })
+        }
+      }
+    }
+  } else {
+    rMessage = "jwt fail"
     return res.send({ result: rMessage, check: rCheck })
   }
 }
