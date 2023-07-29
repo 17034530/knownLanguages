@@ -8,6 +8,8 @@ const { result: userData, reject, result } = require("lodash")
 const { resolve } = require("path")
 const { error } = require("console")
 config.config({ path: "config/config.env" }) //change to base.env or create a config.env in config
+const AccessKey = process.env.ACCESSKEY
+//const time = process.env.TIME //for jwt token time expired
 
 
 var pwreg = /^(?=.*\d)(?=.*[a-z]).{8,10}$/
@@ -29,6 +31,32 @@ var rCheck = false
 
 //user table sql
 const createtUserSQL = "INSERT INTO users (name, password, email, DOB, gender, dateOfCreation) VALUES (?, ?, ?, ?, ?, ?);"
+const checkUserExistSQL = "SELECT * FROM users WHERE name = ?;"
+
+//user token sql
+const loginSQL = "INSERT INTO userSession (token, name, device) VALUES (?, ?, ?);"
+
+//Token
+function genAccessToken(userInfo, device) {
+  const toeknPayLoad = { username: userInfo.name, device: device }
+  const accessToken = jwt.sign(toeknPayLoad, AccessKey, {})
+  return accessToken
+}
+
+async function checkUserExist(name) {
+  return new Promise((resolve, reject) => {
+    db.query(checkUserExistSQL, [name], (err, result) => {
+      if (err) {
+        return resolve("fail")
+      } else {
+        if (result.length > 0) {
+          return resolve(result)
+        }
+        return resolve("Wrong username/password combination") //user does not exist
+      }
+    })
+  })
+}
 
 //Query
 exports.createUser = async (req, res) => {
@@ -77,6 +105,48 @@ exports.createUser = async (req, res) => {
     } else if (!email.match(emailreg)) {
       rMessage = "Invalid Email format"
     }
+    return res.send({ result: rMessage, check: rCheck })
+  }
+}
+
+exports.login = async (req, res) => {
+  if (isEmpty(req.body)) {
+    rMessage = "Invalid para"
+    rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  }
+  const name = req.body.name
+  const password = req.body.password
+  const device = req.body.device ? req.body.device : "mac" //future implication
+  if (name && password) {
+    const userData = await checkUserExist(name)
+    if (typeof userData === "string") { //user does not exist or db fail
+      rCheck = false
+      return res.send({ result: userData, check: rCheck })
+    } else { //user exist
+      const match = await bcrypt.compare(password, userData[0].password)
+      if (match) { //password is correct
+        const token = genAccessToken(userData[0], device)
+        db.query(loginSQL, [token, name, device], async (err, r) => {
+          if (err) {
+            rMessage = "Fail"
+            rCheck = false
+            return res.send({ result: rMessage, check: rCheck })
+          } else {
+            rMessage = "successfully"
+            rCheck = true
+            return res.send({ result: rMessage, check: rCheck, token: token })
+          }
+        })
+      } else { //password fail
+        rMessage = "Wrong name/password combination"
+        rCheck = false
+        return res.send({ result: rMessage, check: rCheck })
+      }
+    }
+  } else {
+    rMessage = "Name/password is empty"
+    rCheck = false
     return res.send({ result: rMessage, check: rCheck })
   }
 }
