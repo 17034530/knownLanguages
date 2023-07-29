@@ -40,6 +40,7 @@ const updateEmailSQL = "UPDATE users SET email = ?, dob = ?, gender = ? WHERE (n
 const loginSQL = "INSERT INTO userSession (token, name, device) VALUES (?, ?, ?);"
 const checkSessionSQL = "SELECT * FROM userSession WHERE name =? AND token = ?;"
 const checkSessionSQLF = "SELECT * FROM userSession WHERE name =? AND token = ? AND device = ?;"//future implication
+const logoutSQL = "DELETE FROM userSession WHERE (token = ?);"
 
 //Token
 function genAccessToken(userInfo, device) {
@@ -233,6 +234,8 @@ exports.profile = async (req, res) => {
     }else{
       rCheck = false
     }
+    const date = new Date(userData[0]["DOB"]);
+    userData[0]["DOB"] = date.toLocaleDateString() === "1/1/1970" ? null : date.toLocaleDateString()
     return res.send({ result: userData, check: rCheck })
   } else {
     rMessage = "jwt fail"
@@ -253,7 +256,7 @@ exports.updateProfile = async (req, res) => {
       return res.send({ result: rMessage, check: rCheck })
     }
     if (!req.body.password) { //old password
-      rMessage = "Password is required"
+      rMessage = "Current password is required"
       return res.send({ result: rMessage, check: rCheck })
     }
     if (!req.body.email) {
@@ -308,6 +311,35 @@ exports.updateProfile = async (req, res) => {
     }
   } else {
     rMessage = "jwt fail"
+    return res.send({ result: rMessage, check: rCheck })
+  }
+}
+
+exports.logout = async (req, res) => {
+  if (isEmpty(req.body)) {
+    rMessage = "Invalid para"
+    rCheck = false
+    return res.send({ result: rMessage, check: rCheck })
+  }
+  const name = req.body.name
+  const token = req.body.token
+  const device = req.body.device ? req.body.device : "mac" //future implication
+  const tokenResult = await checkToken(name, token)
+  if (tokenResult) {
+    db.query(logoutSQL, [token], (err, result) => {
+      if (err) {
+        rMessage = "Fail"
+        rCheck = false
+        return res.send({ result: rMessage, check: rCheck })
+      } else {
+        rMessage = "successfully"
+        rCheck = true
+        return res.send({ result: rMessage, check: rCheck })
+      }
+    })
+  } else { //as token/name does not exist in the first place
+    rMessage = "fail"
+    rCheck = false
     return res.send({ result: rMessage, check: rCheck })
   }
 }
