@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KnownLanguages</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="genderList">
+        <item>Prefer not to say</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Others</item>
+    </string-array>
+</resources>

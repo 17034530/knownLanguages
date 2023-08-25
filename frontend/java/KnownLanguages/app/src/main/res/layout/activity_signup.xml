@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignupActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"/>
+
+    <LinearLayout
+        android:id="@+id/NameLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/nameTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name: "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/nameET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:textSize="20sp"
+            android:hint="name"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/PasswordLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/NameLL"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/passwordTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password: "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/passwordET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:textSize="20sp"
+            android:hint="password"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/EmailLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/PasswordLL"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/emailTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/emailET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:textSize="20sp"
+            android:hint="email@email.com"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/DOBLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EmailLL"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dobTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DOB: "
+            android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/dobET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:ems="10"
+                android:hint="30-12-2022"
+                android:inputType="date"
+                android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/GenderLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DOBLL"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/genderTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gender: "
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/genderSPN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:spinnerMode="dropdown"
+            android:textSize="20sp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/createBTN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/GenderLL"
+        android:text="Create" />
+
+
+</RelativeLayout>
