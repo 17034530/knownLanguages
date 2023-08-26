@@ -37,7 +37,7 @@ class IPsettingVC: UIViewController {
             IPSetting.Port = PortTF.text!
             alertShowUp(title: "Updated", message: "Your new IP address is \(IPSetting.IPAddres) and port is \(IPSetting.Port)")
         }else{
-            alertShowUp(title: "Error", message: "Fail to updated")
+            alertShowUp(title: "Error", message: "Ip address or Port cannot be empty")
         }
     }
     
