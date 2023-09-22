@@ -532,6 +532,7 @@ app.*.symbols
 
 #Config
 backend/node/config/config.env
+backend/go/config/config.env
 frontend/swift/knownLanguages/knownLanguages/config/config.plist
 frontend/java/KnownLanguages/app/src/main/res/raw/config.properties
 frontend/objective-c/knownLanguages/knownLanguages/config/config.plist
