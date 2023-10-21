@@ -165,7 +165,7 @@ exports.login = async (req, res) => {
       rCheck = false
       return res.send({ result: userData, check: rCheck })
     } else { //user exist
-      const match = await bcrypt.compare(password, userData[0].password)
+      const match = await bcrypt.compare(password, userData[0].password) // userData[0].password.replace('$2y$', '$2a$') to hndle php createUser
       if (match) { //password is correct
         const token = genAccessToken(userData[0], device)
         db.query(loginSQL, [token, name, device], async (err, r) => {
