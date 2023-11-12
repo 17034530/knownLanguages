@@ -24,9 +24,6 @@ function Profile(props){
 
         setDob(formatDate)
       }
-      if(result["gender"] !== null){
-        setGender(result["gender"])
-      }
     })
     .catch((err) =>{
       console.log(err)
@@ -34,11 +31,9 @@ function Profile(props){
     })
   },[name,token,props.backendlink])
 
-  function emptyForm(pwOnly){
+  function emptyForm(){
     setPassword("")
-    if(!pwOnly){
-      setNewPassword("")
-    }
+    setNewPassword("")
   }
 
   function editForm(e){
@@ -46,7 +41,7 @@ function Profile(props){
     Axios.patch(props.backendlink + "updateProfile", { name, password, newPassword, email, dob, gender, token })
     .then((res) => {
       alert(res.data.result)
-      emptyForm(res.data.check)
+      emptyForm()
     })
     .catch((err) =>{
       console.log(err)

@@ -12,14 +12,6 @@ function Create(props) {
 
   const nav = useNavigate()
 
-  function emptyForm(){
-    setName("")
-    setPassword("")
-    setEmail("")
-    setDob("")
-    setGender("")
-  }
-
   function createForm(e) {
     e.preventDefault()
     Axios.post(props.backendlink + "createUser", {name, password, email, dob, gender})
@@ -28,10 +20,7 @@ function Create(props) {
       if(res.data.check){
         Axios.post(props.backendlink + "login", { name, password, device: "react" }) //unable to get device info
         .then((reslogin)=>{
-          if (!reslogin.data.check) {
-            alert(reslogin.data.result)
-            emptyForm()
-          } else {
+          if (reslogin.data.check) {
             sessionStorage.setItem("token", reslogin.data.token)
             sessionStorage.setItem("name",name)
 

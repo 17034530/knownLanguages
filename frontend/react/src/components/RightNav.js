@@ -16,7 +16,6 @@ function RightNav(props){
   function logout(){
     Axios.delete(props.backendlink + "logout",{ data: {name, token}} )
     .then((res) => {
-      console.log(res.data)
       sessionStorage.clear()
       //instead of window.location.reload() in case not at homepage
       //using nav required to pass props like url over

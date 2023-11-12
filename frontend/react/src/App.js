@@ -51,7 +51,6 @@ function App() {
   if (token) {
     userAuth()
   }
-
   return (
     <BrowserRouter>
       { loaded ? 
