@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../css/style.css" />
+  <script type="text/javascript" src="../js/jquery-3.7.1.js"></script>
+  <script src="../js/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="../js/checkSession.js" type="text/javascript"></script>
+  <script src="../js/create.js" type="text/javascript"></script>
+</head>
+<body>
+  <div class="centerDiv">
+        <span>Create account</span>
+        <form method="post" class="info">
+          <div class="form-group">
+            <label for="name" class="text-muted mb-1">
+              Name:
+            </label>
+            <input id="name" name="name" class="form-control" type="text" autoComplete="off" required/>
+            </div>
+            <div class="form-group">
+            <label for="password" class="text-muted mb-1">
+              Password:
+            </label>
+            <input id="password" name="password" class="form-control" type="password" required/>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="text-muted mb-1">
+              Email:
+            </label>
+            <input id="email" name="email" class="form-control" type="text" required/>
+          </div>
+
+          <div class="form-group">
+            <label for="dob" class="text-muted mb-1">
+              Dob:
+            </label>
+            <input id="dob" name="dob" class="form-control" type="date"/>
+          </div>
+
+          <div class="form-group">
+            <label for="gender" class="text-muted mb-1">
+              Gender:
+            </label>
+            <select id="gender" name="gender" class="form-control">
+              <option value="">Prefer not to say</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+
+          <button type="submit" class="formButton py-3 mt-4 btn btn-lg btn-success btn-block">
+            Create
+          </button>
+
+        </form>
+      </div>
+</body>
+</html>

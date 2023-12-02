@@ -1,0 +1,41 @@
+.centerDiv {
+  text-align: center;
+  width: 50%;
+  margin: auto;
+}
+
+.rightContainer {
+  position: absolute;
+  top: 0;
+  right:0;
+}
+
+.form-group {
+  width: 70%;
+  align-items: center;
+  margin: auto;
+  flex-direction: row;
+  display: flex;
+  justify-content: center; 
+}
+
+.form-group label {
+  flex: 25%;
+}
+
+.form-group input,
+.form-group select {
+  flex: 35%;
+}
+
+.loginButton {
+  width: 50%;
+}
+
+.formButton{
+  width: 70%;
+}
+
+.formButton2{
+  width: 35%;
+}
