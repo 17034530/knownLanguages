@@ -530,6 +530,40 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 
+#c++ related
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
 #Config
 backend/node/config/config.env
 backend/go/config/config.env
@@ -540,3 +574,4 @@ frontend/objective-c/knownLanguages/knownLanguages/config/config.plist
 frontend/dart/lib/config/config.env
 frontend/objectiveC-swift/knownLanguages/knownLanguages/config/config.plist
 frontend/swift-objectiveC/knownLanguages/knownLanguages/config/config.plist
+frontend/C/src/config/config.env
